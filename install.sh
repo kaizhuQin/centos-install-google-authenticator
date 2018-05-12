@@ -9,3 +9,12 @@ cd google-authenticator-libpam
 ./configure
 make
 make install
+cp /usr/local/lib/security/pam_google_authenticator.so /lib64/security/
+#配置sshd
+echo 'auth       required     pam_google_authenticator.so' >> /etc/pam.d/sshd
+
+#修改配置ChallengeResponseAuthentication no->yes
+sed -i 's#^ChallengeResponseAuthentication no#ChallengeResponseAuthentication yes#' /etc/ssh/sshd_config
+
+#重启sshd服务
+service sshd restart
